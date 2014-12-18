@@ -1,3 +1,3 @@
 # README #
 
-This is a collection of data analysis results in Arctic, mainly organized as IPython Notebooks, contributed by CCAR-Modeling team.
+This is a collection of IPython Notebooks writted by members in CCAR-Modeling team.
