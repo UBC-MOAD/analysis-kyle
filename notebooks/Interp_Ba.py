@@ -62,7 +62,7 @@ xNPEO = np.squeeze(MAT['lon'][:]); yNPEO = np.squeeze(MAT['lat'][:]); zNPEO = np
 MAT = scipy.io.loadmat('../../Arctic-obs/MATLAB files/ARC_Ba.mat')
 xARC = np.squeeze(MAT['lon'][:]); yARC = np.squeeze(MAT['lat'][:]); zARC = np.squeeze(MAT['dep'][:]); BaARC = np.squeeze(MAT['Ba'][:])
 
-nc_name=glob.glob('_data/NEMO/ORCA2_LIM_PISCES/ORCA2_5d_19700101_19701231_ptrc_T*')
+nc_name=glob.glob('/ocean/yingkai/GEOTRACES/NEMO-CODE/NEMOGCM/CONFIG/OFF_TEST/EXP00/EXP01_1m_00010101_00041001_ptrc_T.nc')
 nc_obj=nc.Dataset(nc_name[0])
 deptht = nc_obj.variables['deptht'][:]
 
@@ -153,7 +153,7 @@ x_all_trans, y_all_trans = p1(locx, locy)
 for i in keys:
     x_trans[i], y_trans[i] = p1(x_int[i], y_int[i])
     
-num_layer = len(deptht)
+num_layer = len(deptht)-4
 Ba_ini = np.empty([res, res, num_layer])
 for i in range(num_layer):
     x_temp, y_temp, Ba_temp = remove_nan(x_all_trans, y_all_trans, out_surf[:, i])
@@ -195,8 +195,8 @@ lon_list = np.linspace(-180, 180, 360)
 lat_list = np.linspace(60, 90, 30)
 lonxy, latxy = np.meshgrid(lon_list, lat_list)
 
-Ba_ini_xy = np.empty([np.size(lonxy, 0), np.size(lonxy, 1), 2])
-Ba_ini_orca = np.empty([np.size(nav_lon, 0), np.size(nav_lon, 1), 2])
+Ba_ini_xy = np.empty([np.size(lonxy, 0), np.size(lonxy, 1), num_layer])
+Ba_ini_orca = np.empty([np.size(nav_lon, 0), np.size(nav_lon, 1), num_layer])
 #hit = find_inland(nav_lon, nav_lat)
 hit = np.zeros(latxy.shape)
 
@@ -228,7 +228,7 @@ lat_arctic=lat_arctic[0:-1:res_unit, 0:-1:res_unit]
 topo_arctic=topo_arctic[0:-1:res_unit, 0:-1:res_unit]*-1
 
 clevs=[1000, 2000, 3000]
-for num in range(2):
+for num in range(num_layer):
     # Locations of CTDs
     for j in keys:
         x_cord[j], y_cord[j], _ = remove_nan(x_int[j], y_int[j], Ba_int[j][:, num])
@@ -238,7 +238,7 @@ for num in range(2):
     proj.drawmeridians(np.arange(0, 360, 60), labels=[1, 1, 1, 1], fontsize=10, latmax=90,linewidth=0)
     proj.fillcontinents(color=[0.5, 0.5, 0.5], lake_color=None)
     proj.drawcoastlines(linewidth=1.5, color='k')
-    gridx, gridy = proj(nav_lon, nav_lat)
+    gridx, gridy = proj(lonxy, latxy)
     topox, topoy = proj(lon_arctic, lat_arctic)
     for j in keys:
         x_cord[j], y_cord[j] = proj(x_cord[j], y_cord[j])
