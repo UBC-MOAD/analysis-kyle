@@ -62,9 +62,11 @@ xNPEO = np.squeeze(MAT['lon'][:]); yNPEO = np.squeeze(MAT['lat'][:]); zNPEO = np
 MAT = scipy.io.loadmat('../../Arctic-obs/MATLAB files/ARC_Ba.mat')
 xARC = np.squeeze(MAT['lon'][:]); yARC = np.squeeze(MAT['lat'][:]); zARC = np.squeeze(MAT['dep'][:]); BaARC = np.squeeze(MAT['Ba'][:])
 
-nc_name=glob.glob('/ocean/yingkai/GEOTRACES/NEMO-CODE/NEMOGCM/CONFIG/OFF_TEST/EXP00/EXP01_1m_00010101_00041001_ptrc_T.nc')
-nc_obj=nc.Dataset(nc_name[0])
-deptht = nc_obj.variables['deptht'][:]
+#nc_name=glob.glob('/ocean/yingkai/GEOTRACES/NEMO-CODE/NEMOGCM/CONFIG/OFF_TEST/EXP00/EXP01_1m_00010101_00041001_ptrc_T.nc')
+#nc_obj=nc.Dataset(nc_name[0])
+#deptht = nc_obj.variables['deptht'][:]
+ANHA4_MAT=scipy.io.loadmat('_data/Exchange/coord_ANHA4.mat')
+deptht = ANHA4_MAT['nav_lev'][:]
 
 BGEP_lons = np.hstack((x03, x04, x05))
 BGEP_lats = np.hstack((y03, y04, y05))
@@ -265,7 +267,7 @@ for num in range(num_layer):
 
 # Save
 save_var = { 'Ba_ini_xy': Ba_ini_xy, 'nav_lon': nav_lon, 'nav_lat': nav_lat}
-scipy.io.savemat('_data/Temp_Ba_int.mat', mdict=save_var)
+scipy.io.savemat('_data/Temp_Ba_int_ANHA4.mat', mdict=save_var)
 
 
 
