@@ -292,6 +292,7 @@ def reporj_NEMOgrid(raw_x, raw_y, raw_data, nav_lon, nav_lat, method='nearest'):
     =======================================================================
     '''
     from scipy.interpolate import griddata
+
     LatLonPair=(raw_x.flatten(), raw_y.flatten())
     data_interp = griddata(LatLonPair, raw_data.flatten(), (nav_lon, nav_lat), method=method)
     return data_interp
