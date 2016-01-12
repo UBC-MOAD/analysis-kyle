@@ -38,7 +38,7 @@ for nam in names:
     print('\tWrite precip')
 
     precip_obj[0:1439, :, :] = ori_obj.variables['precip'][0:1439, :, :]
-    for i in range(1440, 1464, 1):
+    for i in range(1439, 1464, 1):
     	precip_obj[i, :, :] = precip_modified_1
     precip_obj[1464:8784] = ori_obj.variables['precip'][1440:8760, :, :]
 
