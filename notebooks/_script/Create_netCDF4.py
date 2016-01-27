@@ -44,7 +44,7 @@ nav_lon_obj[:]=nav_lon
 
 nc_obj.close()
 
-## ORCA2_Nomask
+# ORCA2_Nomask
 
 print('ORCA2_Nomask')
 
@@ -63,7 +63,7 @@ Ba_boundary=Boundary_Mat['Ba']
 d18O_boundary=Boundary_Mat['d18O']
 
 ini_obj = nc.Dataset('../_data/Exchange/TRC_ORCA2_Nomask.nc', 'w') # format='NETCDF4'
-#ini_obj.description = 'Barium Initial Field'
+ini_obj.description = 'Barium Initial Field'
 print(ini_obj.file_format)
 
 time=ini_obj.createDimension('time', None)
@@ -109,7 +109,7 @@ BaVar_obj.units='1e-6 mol/L'
 
 ini_obj.close()
 
-## ANHA4_SRC
+# ANHA4_SRC
 
 print('ANHA4_SRC')
 
@@ -196,9 +196,12 @@ BaB[0, :, :, :] = Ba_boundary
 # For spin-up, use restart files to replace the "real" initial field #
 ######################################################################
 
-re_obj = nc.Dataset('/ocean/yingkai/GEOTRACES/Simulations/spinup/SPIN02_00029200_restart_trc.nc')
-Ba = re_obj.variables['TRNBa'][:]
-d18O = re_obj.variables['TRNd18O'][:]
+re_obj = nc.Dataset('/ocean/yingkai/GEOTRACES/Simulations/run/GEOTRACES_1m_20020101_20131231_ptrc_T.nc')
+Bare = re_obj.variables['Ba'][-1, :, :, :]
+d18Ore = re_obj.variables['d18O'][-1, :, :, :]
+
+Ba[0, :, :, :] = Bare
+d18O[0, :, :, :] = d18Ore
 
 #---------------------------------------------------------------------
 
