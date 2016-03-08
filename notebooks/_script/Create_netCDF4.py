@@ -196,7 +196,7 @@ BaB[0, :, :, :] = Ba_boundary
 # For spin-up, use restart files to replace the "real" initial field #
 ######################################################################
 
-re_obj = nc.Dataset('/ocean/yingkai/GEOTRACES/Simulations/NEW_SPIN_00350640_restart_trc.nc')
+re_obj = nc.Dataset('/ocean/yingkai/GEOTRACES/Simulations/SPIN06_00350640_restart_trc.nc')
 Bare = re_obj.variables['TRNBa'][:]
 d18Ore = re_obj.variables['TRNd18O'][:]
 
