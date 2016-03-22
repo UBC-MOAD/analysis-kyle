@@ -186,22 +186,36 @@ Ba[0, :, :, :] = np.transpose(Ba_ANHA4, [0, 2, 1])
 d18O = np.empty([1, 50, 800, 544])
 d18O[0, :, :, :] = np.transpose(d18O_ANHA4, [0, 2, 1])
 
-d18OB = np.empty([1, 50, 800, 544])
-d18OB[0, :, :, :] = Ba_boundary
+#d18OB = np.empty([1, 50, 800, 544])
+#d18OB[0, :, :, :] = Ba_boundary
 #
-BaB = np.empty([1, 50, 800, 544])
-BaB[0, :, :, :] = Ba_boundary
+#BaB = np.empty([1, 50, 800, 544])
+#BaB[0, :, :, :] = Ba_boundary
 
 ######################################################################
 # For spin-up, use restart files to replace the "real" initial field #
 ######################################################################
 
-#re_obj = nc.Dataset('/ocean/yingkai/GEOTRACES/Simulations/SPIN06_00350640_restart_trc.nc')
-#Bare = re_obj.variables['TRNBa'][:]
-#d18Ore = re_obj.variables['TRNd18O'][:]
-#
-#Ba[0, :, :, :] = Bare
-#d18O[0, :, :, :] = d18Ore
+re_obj = nc.Dataset('/ocean/yingkai/GEOTRACES/Simulations/SPIN06_00350640_restart_trc.nc')
+Bare = re_obj.variables['TRNBa'][:]
+d18Ore = re_obj.variables['TRNd18O'][:]
+
+# preserve original open boundary
+
+d18OB = np.empty([1, 50, 800, 544])
+d18OB[0, :, :, :] = d18Ore
+BaB = np.empty([1, 50, 800, 544])
+
+for i in range(50):
+    BaB[0, i, Ba_boundary[i, :, :]>0.5] =  Bare[0, i, Ba_boundary[i, :, :]>0.5]
+
+## domain-wide sensitivity test
+
+Bare = Bare * 1.1
+d18Ore = d18Ore + np.abs(d18Ore)*0.1
+
+Ba[0, :, :, :] = Bare
+d18O[0, :, :, :] = d18Ore
 
 #---------------------------------------------------------------------
 
@@ -214,74 +228,4 @@ BaBVar_obj[:]=BaB
 d18OBVar_obj[:]=d18OB
 
 ini_obj.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
