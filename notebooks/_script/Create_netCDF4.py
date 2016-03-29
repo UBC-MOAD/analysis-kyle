@@ -211,8 +211,8 @@ for i in range(50):
 
 ## domain-wide sensitivity test
 
-Bare = Bare * 1.1
-d18Ore = d18Ore + np.abs(d18Ore)*0.1
+Bare[0, 0:17, :, :] = Bare[0, 0:17, :, :] * 1.05
+d18Ore[0, 0:17, :, :] = d18Ore[0, 0:17, :, :] + 0.15
 
 Ba[0, :, :, :] = Bare
 d18O[0, :, :, :] = d18Ore
