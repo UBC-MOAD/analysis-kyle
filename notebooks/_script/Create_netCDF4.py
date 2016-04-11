@@ -178,50 +178,34 @@ d18OBVar_obj=ini_obj.createVariable('d18O_boundary', np.float64, ('time', 'lev',
 nav_lat_obj=ini_obj.createVariable('nav_lat', np.float64, ('lat', 'lon'), zlib=True)
 nav_lon_obj=ini_obj.createVariable('nav_lon', np.float64, ('lat', 'lon'), zlib=True)
 
-Ba_boundary=np.transpose(Ba_boundary, [0, 2, 1])
-
-Ba = np.empty([1, 50, 800, 544])
-Ba[0, :, :, :] = np.transpose(Ba_ANHA4, [0, 2, 1])
-
-d18O = np.empty([1, 50, 800, 544])
-d18O[0, :, :, :] = np.transpose(d18O_ANHA4, [0, 2, 1])
-
-#d18OB = np.empty([1, 50, 800, 544])
-#d18OB[0, :, :, :] = Ba_boundary
-#
-#BaB = np.empty([1, 50, 800, 544])
-#BaB[0, :, :, :] = Ba_boundary
-
-######################################################################
-# For spin-up, use restart files to replace the "real" initial field #
-######################################################################
-
-re_obj = nc.Dataset('/ocean/yingkai/GEOTRACES/Simulations/SPIN06_00350640_restart_trc.nc')
-Bare = re_obj.variables['TRNBa'][:]
-d18Ore = re_obj.variables['TRNd18O'][:]
-
-# preserve original open boundary
-
-d18OB = np.empty([1, 50, 800, 544])
-d18OB[0, :, :, :] = d18Ore
-BaB = np.empty([1, 50, 800, 544])
-
-for i in range(50):
-    BaB[0, i, Ba_boundary[i, :, :]>0.5] =  Bare[0, i, Ba_boundary[i, :, :]>0.5]
+# Initial field
+#re_obj = nc.Dataset('/ocean/yingkai/GEOTRACES/Simulations/SPIN06_00350640_restart_trc.nc')
+Ba = np.transpose(Ba_ANHA4, [0, 2, 1]) #re_obj.variables['TRNBa'][:]
+d18O = np.transpose(d18O_ANHA4, [0, 2, 1]) #re_obj.variables['TRNd18O'][:]
+print(d18O.shape)
 
 ## domain-wide sensitivity test
+#Ba[0, 0:17, :, :] = Ba[0, 0:17, :, :] * 1.05
+#d18O[0, 0:17, :, :] = d18O[0, 0:17, :, :] + 0.15
+Ba_4D = np.empty([1, 50, 800, 544])
+d18O_4D = np.empty([1, 50, 800, 544])
+Ba_4D[0, :, :, :] = Ba
+d18O_4D[0, :, :, :] = d18O
 
-Bare[0, 0:17, :, :] = Bare[0, 0:17, :, :] * 1.05
-d18Ore[0, 0:17, :, :] = d18Ore[0, 0:17, :, :] + 0.15
-
-Ba[0, :, :, :] = Bare
-d18O[0, :, :, :] = d18Ore
-
+# Open boundary settings
+## Ba
+Ba_boundary=np.transpose(Ba_boundary, [0, 2, 1])
+BaB = np.empty([1, 50, 800, 544])
+for i in range(50):
+    BaB[0, i, Ba_boundary[i, :, :]>0.5] =  Ba[i, Ba_boundary[i, :, :]>0.5]
+## d18O
+d18OB = np.empty([1, 50, 800, 544])
+d18OB[0, :, :, :] = d18O
 #---------------------------------------------------------------------
 
 time_counter_obj[:]=3600.0
-BaVar_obj[:]=Ba
-d18OVar_obj[:]=d18O
+BaVar_obj[:]=Ba_4D
+d18OVar_obj[:]=d18O_4D
 nav_lat_obj[:]=nav_lat
 nav_lon_obj[:]=nav_lon
 BaBVar_obj[:]=BaB
