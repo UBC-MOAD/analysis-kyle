@@ -155,11 +155,15 @@ nc_obj.close()
 
 print('ANHA4_Nomask')
 
-MAT = scipy.io.loadmat('../_data/Exchange/NEMO_ANHA4_Ba.mat')
-Ba_ANHA4 = MAT['Ba_ini_ANHA4'][:]
+#MAT = scipy.io.loadmat('../_data/Exchange/NEMO_ANHA4_Ba.mat')
+#Ba_ANHA4 = MAT['Ba_ini_ANHA4'][:]
+#MAT = scipy.io.loadmat('../_data/Exchange/NEMO_ANHA4_d18O_Grid.mat')
+#d18O_ANHA4 = MAT['d18O_grid_ANHA']
 
-MAT = scipy.io.loadmat('../_data/Exchange/NEMO_ANHA4_d18O_Grid.mat')
-d18O_ANHA4 = MAT['d18O_grid_ANHA']
+MAT = scipy.io.loadmat('../_data/Exchange/ANHA4_ini_latest.mat')
+Ba_ANHA4 = np.transpose(MAT['Ba_ini'][:], [0, 2, 1])
+d18O_ANHA4 = np.transpose(MAT['d18O_ini'][:], [0, 2, 1])
+
 
 ini_obj = nc.Dataset('../_data/Exchange/TRC_ANHA4_Nomask.nc', 'w') # format='NETCDF4'
 ini_obj.description = 'Barium Initial Field'
