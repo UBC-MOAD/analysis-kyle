@@ -157,13 +157,13 @@ print('ANHA4_Nomask')
 
 #MAT = scipy.io.loadmat('../_data/Exchange/NEMO_ANHA4_Ba.mat')
 #Ba_ANHA4 = MAT['Ba_ini_ANHA4'][:]
-#MAT = scipy.io.loadmat('../_data/Exchange/NEMO_ANHA4_d18O_Grid.mat')
-#d18O_ANHA4 = MAT['d18O_grid_ANHA']
+MAT = scipy.io.loadmat('../_data/Exchange/NEMO_ANHA4_d18O_Grid.mat')
+d18O_ANHA4 = MAT['d18O_grid_ANHA'][:]
 
 MAT = scipy.io.loadmat('../_data/Exchange/ANHA4_ini_latest.mat')
-Ba_ANHA4 = np.transpose(MAT['Ba_ini'][:], [0, 2, 1])
-d18O_ANHA4 = np.transpose(MAT['d18O_ini'][:], [0, 2, 1])
-
+Ba_ANHA4 = MAT['Ba_ini'][:]
+#d18O_ANHA4 = np.transpose(MAT['d18O_ini'][:], [0, 2, 1])
+print(Ba_ANHA4.shape)
 
 ini_obj = nc.Dataset('../_data/Exchange/TRC_ANHA4_Nomask.nc', 'w') # format='NETCDF4'
 ini_obj.description = 'Barium Initial Field'
@@ -184,7 +184,7 @@ nav_lon_obj=ini_obj.createVariable('nav_lon', np.float64, ('lat', 'lon'), zlib=T
 
 # Initial field
 #re_obj = nc.Dataset('/ocean/yingkai/GEOTRACES/Simulations/SPIN06_00350640_restart_trc.nc')
-Ba = np.transpose(Ba_ANHA4, [0, 2, 1]) #re_obj.variables['TRNBa'][:]
+Ba = Ba_ANHA4 #re_obj.variables['TRNBa'][:]
 d18O = np.transpose(d18O_ANHA4, [0, 2, 1]) #re_obj.variables['TRNd18O'][:]
 print(d18O.shape)
 
