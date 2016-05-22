@@ -114,6 +114,37 @@ def curlz_atmos(lon, lat, u, v):
     curlz = dv/dx-du/dy+u*np.tan(lat*np.pi/180.0)/R
     return curlz
 
+def divh_atmos(lon, lat, u, v):
+    '''
+    % divh=divh_atmos(longitude, latitude, u, v)
+    %   Calculate horizontal divergence
+    % ======================================================================= %
+    % Input
+    %   longitude: Longitude, deg
+    %   latitude: Latitude, deg
+    %   u: Zonal Wind, m/s
+    %   v: Meditorial Wind, m/s
+    % Output
+    %   divh: Horizontal Divergence, s^-1
+    % ======================================================================= %
+    % Author
+    %   Yingkai Sha
+    %       yingkaisha@gmail.com
+    % 2014/2/27
+    % ======================================================================= %
+        Rewrite in Python 2.7, 2016/05/21
+            yingkai@eos.ubc.ca
+    '''
+    R=6.3781e6; # earth radius (m)
+    dx = dx_atmos(lon, lat);
+    dy = dy_atmos(lat);
+    du, _ = central_diff(u);
+    _, dv = central_diff(v);
+    divh = du/dx+dv/dy-v*np.tan(lat*np.pi/180.0)/R;
+    #divh[np.abs(lat)==90]=np.nan;
+
+    return divh
+
 
 def advh_atmos(lon, lat, u, v, T):
     '''
