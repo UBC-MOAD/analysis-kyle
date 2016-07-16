@@ -202,7 +202,7 @@ def grad_atmos(lon, lat, H):
     #    dy[i, :] = dy[np_layer, :]
     grad_x, grad_y = central_diff(H);
     grad_x = grad_x/dx;
-    grad_y = grad_y/np.nanmean(dy);
+    grad_y = grad_y/dy;
     return grad_x, grad_y
 
 def geo_wind(lon, lat, H):
