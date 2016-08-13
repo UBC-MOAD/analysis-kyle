@@ -194,7 +194,10 @@ def bin_profile(dep, val, dep_bin):
 def find_inland(lon, lat):
     '''
     Identify if data points are located in land
-    Based on Basemap's GSHHS dataset
+    Based on Basemap's GSHHS dataset.
+    -------------------------------------------
+    Designed for lon = [-180, 180], please convert 
+    if lon > 180
     -------------------------------------------
             ----- 2015/06/29 Yingkai (Kyle) Sha
     '''
