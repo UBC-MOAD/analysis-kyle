@@ -397,10 +397,31 @@ def seasonal_cycle(data):
     return out
 
 
-def seasonal_decomp3d(data, method=0):
+def seasonal_decomp1d(data, method=0):
     '''
     =======================================================================
     Remove the seasonal cycle from 1D data
+                            ----- created on 2015/06/15, Yingkai (Kyle) Sha
+    -----------------------------------------------------------------------
+        data = seasonal_decomp(...)
+    -----------------------------------------------------------------------
+    Input:
+            data
+            method: removal done by anomaly (=0) or normalize (=1)
+    ======================================================================= 
+    '''
+    data2 = np.empty(data.shape)
+    N = len(data)
+    for mon in range(12):
+        temp_data = np.nanmean(data[mon:N:12], 0)
+        if method == 0:
+            data2[mon:N:12] = data[mon:N:12]-temp_data
+    return data2
+
+def seasonal_decomp3d(data, method=0):
+    '''
+    =======================================================================
+    Remove the seasonal cycle from 3D data
                             ----- created on 2015/06/15, Yingkai (Kyle) Sha
     -----------------------------------------------------------------------
         data = seasonal_decomp(...)
@@ -411,9 +432,11 @@ def seasonal_decomp3d(data, method=0):
     ======================================================================= 
     '''
     data2 = np.empty(data.shape)
+    N = len(data)
     for mon in range(12):
-        temp_data = np.nanmean(data[mon:len(data):12, :, :], 0)
+        temp_data = np.nanmean(data[mon:N:12, :, :], 0)
         if method == 0:
-            data2[mon:len(data):12, :, :] = data[mon:len(data):12, :, :]-temp_data
+            data2[mon:N:12, :, :] = data[mon:N:12, :, :]-temp_data
     return data2
+
    
