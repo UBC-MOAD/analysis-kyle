@@ -9,6 +9,7 @@ syntax: glob
 *.m
 *.pdf
 
+.ipynb_checkpoints/*
 notebooks/ANHA4/Diagnose/.ipynb_checkpoints/*
 notebooks/*/.ipynb_checkpoints/*
 notebooks/*/*/.ipynb_checkpoints/*
