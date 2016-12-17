@@ -174,7 +174,67 @@ def advh_atmos(lon, lat, u, v, T):
     advh=-(v*dTy/dy+u*dTx/dx)
     return advh
 
+from Atmos_tools import *
+def grad_atmos(lon, lat, H):
+    '''
+    % [grad_x grad_y]=grad_atmos(longitude, latitude, H)
+    %   Calculate gradient of a 2-D variable.
+    % ======================================================================= %
+    % Input
+    %   longitude: Longitude, deg
+    %   latitude: Latitude, deg
+    %   H: a scalar field
+    % Output
+    %   grad_x: \frac{\partial H}{\partial x}, unit(H)/m
+    %   grad_y: \frac{\partial H}{\partial y}, unit(H)/m
+    % ======================================================================= %
+    % Author
+    %   Yingkai Sha
+    %       yingkaisha@gmail.com
+    % 2014/2/27
+    % ======================================================================= %
+    Rewrite in Python 2.7, 2016/07/07
+        yingkai@eos.ubc.ca
+    '''
+    dx = dx_atmos(lon, lat);
+    dy = dy_atmos(lat);
+    #for i in range(np_layer+1, np.size(lat, 0)):
+    #    dy[i, :] = dy[np_layer, :]
+    grad_x, grad_y = central_diff(H);
+    grad_x = grad_x/dx;
+    grad_y = grad_y/dy;
+    return grad_x, grad_y
 
+def geo_wind(lon, lat, H):
+    '''
+    % [ug vg]=geostrophic_wind(longitude, latitude, H)
+    %   Calculate geostrophic wind (in quasi-geostrophic balance).
+    % ======================================================================= %
+    % Input
+    %   longitude: Longitude, deg
+    %   latitude: Latitude, deg
+    %   H: Geopotential Height, m
+    % Output
+    %   [ug vg]: Geostrophic Wind components, [zonal meditorial], m/s
+    % Note
+    %   More information about the arrangement of input data, or if you get ill
+    %   results (e.g. NaN or Inf value), see "check_input".
+    % ======================================================================= %
+    % Author
+    %   Yingkai Sha
+    %       yingkaisha@gmail.com
+    % 2014/2/27
+    % ======================================================================= %
+    '''
+    omega = 7.292*1e-5; # rotational velocity
+    g = 9.8; # m/s^2 % gravity
+    f = 2*omega*np.sin(lat*np.pi/180.0); # geostrophic parameter
+    grad_x, grad_y = grad_atmos(lon, lat, H);
+    ug = -(g/f)*grad_y;
+    vg = (g/f)*grad_x;
+    #ug[np.abs(lat)>88.5] = np.nan;
+    #vg[np.abs(lat)>88.5] = np.nan;
+    return ug, vg
 
 
 def shoot(lon, lat, azimuth, maxdist=None):
@@ -337,10 +397,31 @@ def seasonal_cycle(data):
     return out
 
 
-def seasonal_decomp3d(data, method=0):
+def seasonal_decomp1d(data, method=0):
     '''
     =======================================================================
     Remove the seasonal cycle from 1D data
+                            ----- created on 2015/06/15, Yingkai (Kyle) Sha
+    -----------------------------------------------------------------------
+        data = seasonal_decomp(...)
+    -----------------------------------------------------------------------
+    Input:
+            data
+            method: removal done by anomaly (=0) or normalize (=1)
+    ======================================================================= 
+    '''
+    data2 = np.empty(data.shape)
+    N = len(data)
+    for mon in range(12):
+        temp_data = np.nanmean(data[mon:N:12], 0)
+        if method == 0:
+            data2[mon:N:12] = data[mon:N:12]-temp_data
+    return data2
+
+def seasonal_decomp3d(data, method=0):
+    '''
+    =======================================================================
+    Remove the seasonal cycle from 3D data
                             ----- created on 2015/06/15, Yingkai (Kyle) Sha
     -----------------------------------------------------------------------
         data = seasonal_decomp(...)
@@ -351,9 +432,11 @@ def seasonal_decomp3d(data, method=0):
     ======================================================================= 
     '''
     data2 = np.empty(data.shape)
+    N = len(data)
     for mon in range(12):
-        temp_data = np.nanmean(data[mon:len(data):12, :, :], 0)
+        temp_data = np.nanmean(data[mon:N:12, :, :], 0)
         if method == 0:
-            data2[mon:len(data):12, :, :] = data[mon:len(data):12, :, :]-temp_data
+            data2[mon:N:12, :, :] = data[mon:N:12, :, :]-temp_data
     return data2
+
    
